@@ -39,11 +39,20 @@ export function isInside ([lng, lat], linearRing) {
     const deltaYplus = linearRing[i][1] - lat
     const deltaYminus = lat - linearRing[i - 1][1]
     if (deltaYplus > 0 && deltaYminus <= 0) continue
-    if (deltaYplus <= 0 && deltaYminus > 0) continue
+    if (deltaYplus < 0 && deltaYminus >= 0) continue
     const deltaX = (deltaYplus * linearRing[i - 1][0] + deltaYminus * linearRing[i][0]) /
       (deltaYplus + deltaYminus) - lng
     if (deltaX <= 0) continue
     isInside = !isInside
   }
   return isInside
+}
+
+export function bbox2geojson (bbox) {
+  return {
+    type: 'Polygon',
+    coordinates: [
+      [[bbox[0], bbox[1]], [bbox[2], bbox[1]], [bbox[2], bbox[3]], [bbox[0], bbox[3]], [bbox[0], bbox[1]]]
+    ]
+  }
 }
